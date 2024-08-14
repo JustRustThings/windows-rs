@@ -68,18 +68,17 @@ impl<C: crate::RuntimeName, I: Interface> FactoryCache<C, I> {
 // This is safe because `FactoryCache` only holds agile factory pointers, which are safe to cache and share between threads.
 unsafe impl<C, I> Sync for FactoryCache<C, I> {}
 
-/// Attempts to load the factory object for the given WinRT class.
-/// This can be used to access COM interfaces implemented on a Windows Runtime class factory.
-pub fn load_factory<C: crate::RuntimeName, I: Interface>() -> crate::Result<I> {
-    let mut factory: Option<I> = None;
-    let name = crate::HSTRING::from(C::NAME);
-
-    let code = unsafe {
+#[cfg(not(target_vendor = "win7"))]
+fn factory_get_com_factory<I: Interface>(
+    name: &crate::HSTRING,
+    factory: &mut Option<I>,
+) -> crate::HRESULT {
+    unsafe {
         let mut get_com_factory = || {
             crate::HRESULT(RoGetActivationFactory(
-                transmute_copy(&name),
+                transmute_copy(name),
                 &I::IID as *const _ as _,
-                &mut factory as *mut _ as *mut _,
+                factory as *mut _ as *mut _,
             ))
         };
         let mut code = get_com_factory();
@@ -95,7 +94,68 @@ pub fn load_factory<C: crate::RuntimeName, I: Interface>() -> crate::Result<I> {
         }
 
         code
-    };
+    }
+}
+
+#[cfg(target_vendor = "win7")]
+fn factory_get_com_factory<I: Interface>(
+    name: &crate::HSTRING,
+    factory: &mut Option<I>,
+) -> crate::HRESULT {
+    type CoIncrementMTAUsageDelay =
+        extern "system" fn(cookie: *mut *mut std::ffi::c_void) -> crate::HRESULT;
+    type RoGetActivationFactoryDelay = extern "system" fn(
+        hstring: *mut std::ffi::c_void,
+        interface: &crate::GUID,
+        result: *mut *mut std::ffi::c_void,
+    ) -> crate::HRESULT;
+
+    if let Some(function) = unsafe {
+        delay_load::<RoGetActivationFactoryDelay>(
+            crate::s!("combase.dll"),
+            crate::s!("RoGetActivationFactory"),
+        )
+    } {
+        unsafe {
+            let mut code = function(
+                std::mem::transmute_copy(&name),
+                &I::IID,
+                factory as *mut _ as *mut _,
+            );
+
+            // If RoGetActivationFactory fails because combase hasn't been loaded yet then load combase
+            // automatically so that it "just works" for apartment-agnostic code.
+            if code == CO_E_NOTINITIALIZED {
+                if let Some(mta) = delay_load::<CoIncrementMTAUsageDelay>(
+                    crate::s!("ole32.dll"),
+                    crate::s!("CoIncrementMTAUsage"),
+                ) {
+                    let mut cookie = std::ptr::null_mut();
+                    let _ = mta(&mut cookie);
+                }
+
+                // Now try a second time to get the activation factory via the OS.
+                code = function(
+                    std::mem::transmute_copy(&name),
+                    &I::IID,
+                    factory as *mut _ as *mut _,
+                );
+            }
+            code
+        }
+    } else {
+        // CLASS_E_CLASSNOTAVAILABLE
+        crate::HRESULT(0x80040111_u32 as _)
+    }
+}
+
+/// Attempts to load the factory object for the given WinRT class.
+/// This can be used to access COM interfaces implemented on a Windows Runtime class factory.
+pub fn load_factory<C: crate::RuntimeName, I: Interface>() -> crate::Result<I> {
+    let mut factory: Option<I> = None;
+    let name = crate::HSTRING::from(C::NAME);
+
+    let code = factory_get_com_factory(&name, &mut factory);
 
     // If this succeeded then return the resulting factory interface.
     if let Some(factory) = factory {
