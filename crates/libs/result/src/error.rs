@@ -289,10 +289,26 @@ mod error_info {
             }
         }
 
+        #[cfg(not(target_vendor = "win7"))]
         pub(crate) fn originate_error(code: HRESULT, message: &str) {
             let message: Vec<_> = message.encode_utf16().collect();
             unsafe {
                 RoOriginateErrorW(code.0, message.len() as u32, message.as_ptr());
+            }
+        }
+
+        #[cfg(target_vendor = "win7")]
+        pub(crate) fn originate_error(code: HRESULT, message: &str) {
+            type RoOriginateErrorWDelay =
+                extern "system" fn(error: HRESULT, cchmax: u32, message: PCWSTR) -> BOOL;
+            unsafe {
+                if let Some(function) = delay_load::<RoOriginateErrorWDelay>(
+                    "api-ms-win-core-winrt-error-l1-1-0.dll\0".as_ptr(),
+                    "RoOriginateErrorW\0".as_ptr(),
+                ) {
+                    let message: Vec<_> = message.encode_utf16().collect();
+                    function(code, message.len() as u32, message.as_ptr());
+                }
             }
         }
 
@@ -349,6 +365,27 @@ mod error_info {
 
     unsafe impl Send for ErrorInfo {}
     unsafe impl Sync for ErrorInfo {}
+
+    unsafe fn delay_load<T>(library: crate::PCSTR, function: crate::PCSTR) -> Option<T> {
+        let library = LoadLibraryExA(
+            library,
+            core::ptr::null_mut(),
+            LOAD_LIBRARY_SEARCH_DEFAULT_DIRS,
+        );
+
+        if library.is_null() {
+            return None;
+        }
+
+        let address = GetProcAddress(library, function);
+
+        if address.is_some() {
+            return Some(core::mem::transmute_copy(&address));
+        }
+
+        FreeLibrary(library);
+        None
+    }
 }
 
 #[cfg(not(all(windows, not(windows_slim_errors))))]
