@@ -5,6 +5,7 @@
     Windows.Win32.Foundation.E_UNEXPECTED
     Windows.Win32.Foundation.ERROR_INVALID_DATA
     Windows.Win32.Foundation.ERROR_NO_UNICODE_TRANSLATION
+    Windows.Win32.Foundation.FreeLibrary
     Windows.Win32.Foundation.GetLastError
     Windows.Win32.Foundation.SysFreeString
     Windows.Win32.Foundation.SysStringLen
@@ -16,6 +17,7 @@
     Windows.Win32.System.Diagnostics.Debug.FORMAT_MESSAGE_FROM_SYSTEM
     Windows.Win32.System.Diagnostics.Debug.FORMAT_MESSAGE_IGNORE_INSERTS
     Windows.Win32.System.Diagnostics.Debug.FormatMessageW
+    Windows.Win32.System.LibraryLoader.GetProcAddress
     Windows.Win32.System.LibraryLoader.LOAD_LIBRARY_SEARCH_DEFAULT_DIRS
     Windows.Win32.System.LibraryLoader.LoadLibraryExA
     Windows.Win32.System.Memory.GetProcessHeap
