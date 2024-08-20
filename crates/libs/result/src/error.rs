@@ -374,6 +374,7 @@ mod error_info {
     unsafe impl Send for ErrorInfo {}
     unsafe impl Sync for ErrorInfo {}
 
+    #[cfg(target_vendor = "win7")]
     unsafe fn delay_load<T>(library: crate::PCSTR, function: crate::PCSTR) -> Option<T> {
         let library = LoadLibraryExA(
             library,
