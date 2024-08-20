@@ -10,8 +10,10 @@
     FORMAT_MESSAGE_FROM_SYSTEM
     FORMAT_MESSAGE_IGNORE_INSERTS
     FormatMessageW
+    FreeLibrary
     GetErrorInfo
     GetLastError
+    GetProcAddress
     GetProcessHeap
     HeapFree
     IErrorInfo
