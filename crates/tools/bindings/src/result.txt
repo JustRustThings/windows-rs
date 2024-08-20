@@ -13,6 +13,7 @@
     FormatMessageW
     GetErrorInfo
     GetLastError
+    FreeLibrary
     GetProcessHeap
     HeapFree
     IErrorInfo
@@ -20,6 +21,7 @@
     LOAD_LIBRARY_SEARCH_DEFAULT_DIRS
     LoadLibraryExA
     RoOriginateErrorW
+    GetProcAddress
     SetErrorInfo
     SysFreeString
     SysStringLen
