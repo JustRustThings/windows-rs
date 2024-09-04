@@ -118,7 +118,7 @@ fn factory_get_com_factory<I: Interface>(
     } {
         unsafe {
             let mut code = function(
-                std::mem::transmute_copy(&name),
+                std::mem::transmute_copy(name),
                 &I::IID,
                 factory as *mut _ as *mut _,
             );
@@ -136,7 +136,7 @@ fn factory_get_com_factory<I: Interface>(
 
                 // Now try a second time to get the activation factory via the OS.
                 code = function(
-                    std::mem::transmute_copy(&name),
+                    std::mem::transmute_copy(name),
                     &I::IID,
                     factory as *mut _ as *mut _,
                 );
