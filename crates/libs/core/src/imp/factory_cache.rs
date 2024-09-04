@@ -105,8 +105,8 @@ fn factory_get_com_factory<I: Interface>(
     type CoIncrementMTAUsageDelay =
         extern "system" fn(cookie: *mut *mut std::ffi::c_void) -> crate::HRESULT;
     type RoGetActivationFactoryDelay = extern "system" fn(
-        hstring: *mut std::ffi::c_void,
-        interface: &crate::GUID,
+        hstring: *mut crate::HSTRING,
+        interface: *const crate::GUID,
         result: *mut *mut std::ffi::c_void,
     ) -> crate::HRESULT;
 
@@ -117,11 +117,14 @@ fn factory_get_com_factory<I: Interface>(
         )
     } {
         unsafe {
-            let mut code = function(
-                std::mem::transmute_copy(name),
-                &I::IID,
-                factory as *mut _ as *mut _,
-            );
+            let mut get_com_factory = move || {
+                function(
+                    transmute_copy(name),
+                    &I::IID as *const _ as _,
+                    factory as *mut _ as *mut _,
+                )
+            };
+            let mut code = get_com_factory();
 
             // If RoGetActivationFactory fails because combase hasn't been loaded yet then load combase
             // automatically so that it "just works" for apartment-agnostic code.
@@ -135,11 +138,7 @@ fn factory_get_com_factory<I: Interface>(
                 }
 
                 // Now try a second time to get the activation factory via the OS.
-                code = function(
-                    std::mem::transmute_copy(name),
-                    &I::IID,
-                    factory as *mut _ as *mut _,
-                );
+                code = get_com_factory();
             }
             code
         }
