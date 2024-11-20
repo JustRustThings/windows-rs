@@ -103,11 +103,11 @@ fn factory_get_com_factory<I: Interface>(
     factory: &mut Option<I>,
 ) -> crate::HRESULT {
     type CoIncrementMTAUsageDelay =
-        extern "system" fn(cookie: *mut *mut std::ffi::c_void) -> crate::HRESULT;
+        extern "system" fn(cookie: *mut *mut core::ffi::c_void) -> crate::HRESULT;
     type RoGetActivationFactoryDelay = extern "system" fn(
         hstring: *mut crate::HSTRING,
         interface: *const crate::GUID,
-        result: *mut *mut std::ffi::c_void,
+        result: *mut *mut core::ffi::c_void,
     ) -> crate::HRESULT;
 
     if let Some(function) = unsafe {
@@ -133,7 +133,7 @@ fn factory_get_com_factory<I: Interface>(
                     crate::s!("ole32.dll"),
                     crate::s!("CoIncrementMTAUsage"),
                 ) {
-                    let mut cookie = std::ptr::null_mut();
+                    let mut cookie = core::ptr::null_mut();
                     let _ = mta(&mut cookie);
                 }
 
