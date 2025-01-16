@@ -376,23 +376,25 @@ mod error_info {
 
     #[cfg(target_vendor = "win7")]
     unsafe fn delay_load<T>(library: crate::PCSTR, function: crate::PCSTR) -> Option<T> {
-        let library = LoadLibraryExA(
-            library,
-            core::ptr::null_mut(),
-            LOAD_LIBRARY_SEARCH_DEFAULT_DIRS,
-        );
+        let library = unsafe {
+            LoadLibraryExA(
+                library,
+                core::ptr::null_mut(),
+                LOAD_LIBRARY_SEARCH_DEFAULT_DIRS,
+            )
+        };
 
         if library.is_null() {
             return None;
         }
 
-        let address = GetProcAddress(library, function);
+        let address = unsafe { GetProcAddress(library, function) };
 
         if address.is_some() {
-            return Some(core::mem::transmute_copy(&address));
+            return Some(unsafe { core::mem::transmute_copy(&address) });
         }
 
-        FreeLibrary(library);
+        unsafe { FreeLibrary(library) };
         None
     }
 }
