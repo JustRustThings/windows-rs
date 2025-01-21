@@ -8990,10 +8990,14 @@ impl Default for SP_CLASSINSTALL_HEADER {
 }
 #[repr(C, packed(1))]
 #[cfg(target_arch = "x86")]
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct SP_CLASSINSTALL_HEADER {
     pub cbSize: u32,
     pub InstallFunction: DI_FUNCTION,
+}
+#[cfg(target_arch = "x86")]
+impl windows_core::TypeKind for SP_DETECTDEVICE_PARAMS {
+    type TypeKind = windows_core::CopyType;
 }
 #[cfg(target_arch = "x86")]
 impl windows_core::TypeKind for SP_CLASSINSTALL_HEADER {
@@ -9018,7 +9022,11 @@ impl windows_core::TypeKind for SP_DETECTDEVICE_PARAMS {
     type TypeKind = windows_core::CopyType;
 }
 #[cfg(any(target_arch = "aarch64", target_arch = "arm64ec", target_arch = "x86_64"))]
-impl Default for SP_DETECTDEVICE_PARAMS {
+impl windows_core::TypeKind for SP_DEVICE_INTERFACE_DATA {
+    type TypeKind = windows_core::CopyType;
+}
+#[cfg(any(target_arch = "aarch64", target_arch = "arm64ec", target_arch = "x86_64"))]
+impl Default for SP_DEVICE_INTERFACE_DATA {
     fn default() -> Self {
         unsafe { core::mem::zeroed() }
     }
@@ -9030,6 +9038,10 @@ pub struct SP_DETECTDEVICE_PARAMS {
     pub ClassInstallHeader: SP_CLASSINSTALL_HEADER,
     pub DetectProgressNotify: PDETECT_PROGRESS_NOTIFY,
     pub ProgressNotifyParam: *mut core::ffi::c_void,
+}
+#[cfg(target_arch = "x86")]
+impl windows_core::TypeKind for SP_DEVICE_INTERFACE_DATA {
+    type TypeKind = windows_core::CopyType;
 }
 #[cfg(target_arch = "x86")]
 impl windows_core::TypeKind for SP_DETECTDEVICE_PARAMS {
@@ -9046,16 +9058,18 @@ impl Default for SP_DETECTDEVICE_PARAMS {
 #[derive(Clone, Copy)]
 pub struct SP_DEVICE_INTERFACE_DATA {
     pub cbSize: u32,
-    pub InterfaceClassGuid: windows_core::GUID,
-    pub Flags: u32,
-    pub Reserved: usize,
+    pub DevicePath: [i8; 1],
 }
 #[cfg(any(target_arch = "aarch64", target_arch = "arm64ec", target_arch = "x86_64"))]
 impl windows_core::TypeKind for SP_DEVICE_INTERFACE_DATA {
     type TypeKind = windows_core::CopyType;
 }
 #[cfg(any(target_arch = "aarch64", target_arch = "arm64ec", target_arch = "x86_64"))]
-impl Default for SP_DEVICE_INTERFACE_DATA {
+impl windows_core::TypeKind for SP_DEVICE_INTERFACE_DETAIL_DATA_A {
+    type TypeKind = windows_core::CopyType;
+}
+#[cfg(any(target_arch = "aarch64", target_arch = "arm64ec", target_arch = "x86_64"))]
+impl Default for SP_DEVICE_INTERFACE_DETAIL_DATA_A {
     fn default() -> Self {
         unsafe { core::mem::zeroed() }
     }
@@ -9070,6 +9084,10 @@ pub struct SP_DEVICE_INTERFACE_DATA {
     pub Reserved: usize,
 }
 #[cfg(target_arch = "x86")]
+impl windows_core::TypeKind for SP_DEVICE_INTERFACE_DETAIL_DATA_A {
+    type TypeKind = windows_core::CopyType;
+}
+#[cfg(target_arch = "x86")]
 impl windows_core::TypeKind for SP_DEVICE_INTERFACE_DATA {
     type TypeKind = windows_core::CopyType;
 }
@@ -9084,14 +9102,18 @@ impl Default for SP_DEVICE_INTERFACE_DATA {
 #[derive(Clone, Copy)]
 pub struct SP_DEVICE_INTERFACE_DETAIL_DATA_A {
     pub cbSize: u32,
-    pub DevicePath: [i8; 1],
+    pub DevicePath: [u16; 1],
 }
 #[cfg(any(target_arch = "aarch64", target_arch = "arm64ec", target_arch = "x86_64"))]
 impl windows_core::TypeKind for SP_DEVICE_INTERFACE_DETAIL_DATA_A {
     type TypeKind = windows_core::CopyType;
 }
 #[cfg(any(target_arch = "aarch64", target_arch = "arm64ec", target_arch = "x86_64"))]
-impl Default for SP_DEVICE_INTERFACE_DETAIL_DATA_A {
+impl windows_core::TypeKind for SP_DEVICE_INTERFACE_DETAIL_DATA_W {
+    type TypeKind = windows_core::CopyType;
+}
+#[cfg(any(target_arch = "aarch64", target_arch = "arm64ec", target_arch = "x86_64"))]
+impl Default for SP_DEVICE_INTERFACE_DETAIL_DATA_W {
     fn default() -> Self {
         unsafe { core::mem::zeroed() }
     }
@@ -9104,6 +9126,10 @@ pub struct SP_DEVICE_INTERFACE_DETAIL_DATA_A {
     pub DevicePath: [i8; 1],
 }
 #[cfg(target_arch = "x86")]
+impl windows_core::TypeKind for SP_DEVICE_INTERFACE_DETAIL_DATA_W {
+    type TypeKind = windows_core::CopyType;
+}
+#[cfg(target_arch = "x86")]
 impl windows_core::TypeKind for SP_DEVICE_INTERFACE_DETAIL_DATA_A {
     type TypeKind = windows_core::CopyType;
 }
@@ -9118,14 +9144,20 @@ impl Default for SP_DEVICE_INTERFACE_DETAIL_DATA_A {
 #[derive(Clone, Copy)]
 pub struct SP_DEVICE_INTERFACE_DETAIL_DATA_W {
     pub cbSize: u32,
-    pub DevicePath: [u16; 1],
+    pub ClassGuid: windows_core::GUID,
+    pub DevInst: u32,
+    pub Reserved: usize,
 }
 #[cfg(any(target_arch = "aarch64", target_arch = "arm64ec", target_arch = "x86_64"))]
 impl windows_core::TypeKind for SP_DEVICE_INTERFACE_DETAIL_DATA_W {
     type TypeKind = windows_core::CopyType;
 }
 #[cfg(any(target_arch = "aarch64", target_arch = "arm64ec", target_arch = "x86_64"))]
-impl Default for SP_DEVICE_INTERFACE_DETAIL_DATA_W {
+impl windows_core::TypeKind for SP_DEVINFO_DATA {
+    type TypeKind = windows_core::CopyType;
+}
+#[cfg(any(target_arch = "aarch64", target_arch = "arm64ec", target_arch = "x86_64"))]
+impl Default for SP_DEVINFO_DATA {
     fn default() -> Self {
         unsafe { core::mem::zeroed() }
     }
@@ -9138,6 +9170,10 @@ pub struct SP_DEVICE_INTERFACE_DETAIL_DATA_W {
     pub DevicePath: [u16; 1],
 }
 #[cfg(target_arch = "x86")]
+impl windows_core::TypeKind for SP_DEVINFO_DATA {
+    type TypeKind = windows_core::CopyType;
+}
+#[cfg(target_arch = "x86")]
 impl windows_core::TypeKind for SP_DEVICE_INTERFACE_DETAIL_DATA_W {
     type TypeKind = windows_core::CopyType;
 }
@@ -9153,46 +9189,12 @@ impl Default for SP_DEVICE_INTERFACE_DETAIL_DATA_W {
 pub struct SP_DEVINFO_DATA {
     pub cbSize: u32,
     pub ClassGuid: windows_core::GUID,
-    pub DevInst: u32,
-    pub Reserved: usize,
-}
-#[cfg(any(target_arch = "aarch64", target_arch = "arm64ec", target_arch = "x86_64"))]
-impl windows_core::TypeKind for SP_DEVINFO_DATA {
-    type TypeKind = windows_core::CopyType;
-}
-#[cfg(any(target_arch = "aarch64", target_arch = "arm64ec", target_arch = "x86_64"))]
-impl Default for SP_DEVINFO_DATA {
-    fn default() -> Self {
-        unsafe { core::mem::zeroed() }
-    }
-}
-#[repr(C, packed(1))]
-#[cfg(target_arch = "x86")]
-#[derive(Clone, Copy)]
-pub struct SP_DEVINFO_DATA {
-    pub cbSize: u32,
-    pub ClassGuid: windows_core::GUID,
-    pub DevInst: u32,
-    pub Reserved: usize,
-}
-#[cfg(target_arch = "x86")]
-impl windows_core::TypeKind for SP_DEVINFO_DATA {
-    type TypeKind = windows_core::CopyType;
-}
-#[cfg(target_arch = "x86")]
-impl Default for SP_DEVINFO_DATA {
-    fn default() -> Self {
-        unsafe { core::mem::zeroed() }
-    }
-}
-#[repr(C)]
-#[cfg(any(target_arch = "aarch64", target_arch = "arm64ec", target_arch = "x86_64"))]
-#[derive(Clone, Copy)]
-pub struct SP_DEVINFO_LIST_DETAIL_DATA_A {
-    pub cbSize: u32,
-    pub ClassGuid: windows_core::GUID,
     pub RemoteMachineHandle: super::super::Foundation::HANDLE,
     pub RemoteMachineName: [i8; 263],
+}
+#[cfg(any(target_arch = "aarch64", target_arch = "arm64ec", target_arch = "x86_64"))]
+impl windows_core::TypeKind for SP_DEVINFO_DATA {
+    type TypeKind = windows_core::CopyType;
 }
 #[cfg(any(target_arch = "aarch64", target_arch = "arm64ec", target_arch = "x86_64"))]
 impl windows_core::TypeKind for SP_DEVINFO_LIST_DETAIL_DATA_A {
@@ -9207,11 +9209,61 @@ impl Default for SP_DEVINFO_LIST_DETAIL_DATA_A {
 #[repr(C, packed(1))]
 #[cfg(target_arch = "x86")]
 #[derive(Clone, Copy)]
+pub struct SP_DEVINFO_DATA {
+    pub cbSize: u32,
+    pub ClassGuid: windows_core::GUID,
+    pub DevInst: u32,
+    pub Reserved: usize,
+}
+#[cfg(target_arch = "x86")]
+impl windows_core::TypeKind for SP_DEVINFO_LIST_DETAIL_DATA_A {
+    type TypeKind = windows_core::CopyType;
+}
+#[cfg(target_arch = "x86")]
+impl windows_core::TypeKind for SP_DEVINFO_DATA {
+    type TypeKind = windows_core::CopyType;
+}
+#[cfg(target_arch = "x86")]
+impl Default for SP_DEVINFO_DATA {
+    fn default() -> Self {
+        unsafe { core::mem::zeroed() }
+    }
+}
+#[repr(C)]
+#[cfg(any(target_arch = "aarch64", target_arch = "arm64ec", target_arch = "x86_64"))]
+#[derive(Clone, Copy)]
+pub struct SP_DEVINFO_LIST_DETAIL_DATA_A {
+    pub cbSize: u32,
+    pub ClassGuid: windows_core::GUID,
+    pub RemoteMachineHandle: super::super::Foundation::HANDLE,
+    pub RemoteMachineName: [u16; 263],
+}
+#[cfg(any(target_arch = "aarch64", target_arch = "arm64ec", target_arch = "x86_64"))]
+impl windows_core::TypeKind for SP_DEVINFO_LIST_DETAIL_DATA_A {
+    type TypeKind = windows_core::CopyType;
+}
+#[cfg(any(target_arch = "aarch64", target_arch = "arm64ec", target_arch = "x86_64"))]
+impl windows_core::TypeKind for SP_DEVINFO_LIST_DETAIL_DATA_W {
+    type TypeKind = windows_core::CopyType;
+}
+#[cfg(any(target_arch = "aarch64", target_arch = "arm64ec", target_arch = "x86_64"))]
+impl Default for SP_DEVINFO_LIST_DETAIL_DATA_W {
+    fn default() -> Self {
+        unsafe { core::mem::zeroed() }
+    }
+}
+#[repr(C, packed(1))]
+#[cfg(target_arch = "x86")]
+#[derive(Clone, Copy)]
 pub struct SP_DEVINFO_LIST_DETAIL_DATA_A {
     pub cbSize: u32,
     pub ClassGuid: windows_core::GUID,
     pub RemoteMachineHandle: super::super::Foundation::HANDLE,
     pub RemoteMachineName: [i8; 263],
+}
+#[cfg(target_arch = "x86")]
+impl windows_core::TypeKind for SP_DEVINFO_LIST_DETAIL_DATA_W {
+    type TypeKind = windows_core::CopyType;
 }
 #[cfg(target_arch = "x86")]
 impl windows_core::TypeKind for SP_DEVINFO_LIST_DETAIL_DATA_A {
