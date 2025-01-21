@@ -153,8 +153,7 @@ impl Error {
     }
 }
 
-#[cfg(feature = "std")]
-impl std::error::Error for Error {}
+impl core::error::Error for Error {}
 
 impl From<Error> for HRESULT {
     fn from(error: Error) -> Self {
