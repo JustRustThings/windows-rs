@@ -7400,7 +7400,7 @@ pub struct SP_CLASSIMAGELIST_DATA {
 }
 #[repr(C, packed(1))]
 #[cfg(target_arch = "x86")]
-#[derive(Clone, Copy, Default)]
+#[derive(Clone, Copy, Default, Debug, PartialEq)]
 pub struct SP_CLASSINSTALL_HEADER {
     pub cbSize: u32,
     pub InstallFunction: DI_FUNCTION,
