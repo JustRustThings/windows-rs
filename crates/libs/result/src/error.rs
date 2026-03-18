@@ -302,11 +302,11 @@ mod error_info {
                 extern "system" fn(error: HRESULT, cchmax: u32, message: PCWSTR) -> BOOL;
             unsafe {
                 if let Some(function) = delay_load::<RoOriginateErrorWDelay>(
-                    "api-ms-win-core-winrt-error-l1-1-0.dll\0".as_ptr(),
-                    "RoOriginateErrorW\0".as_ptr(),
+                    c"api-ms-win-core-winrt-error-l1-1-0.dll".as_ptr().cast(),
+                    c"RoOriginateErrorW".as_ptr().cast(),
                 ) {
                     let message: Vec<_> = message.encode_utf16().collect();
-                    function(code, message.len() as u32, message.as_ptr());
+                    let _ = function(code, message.len() as u32, message.as_ptr());
                 }
             }
         }
